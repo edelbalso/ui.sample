@@ -1,0 +1,78 @@
+@import '../bower_components/normalize.css/normalize.css'
+
+// VARIABLES
+
+$buffer: 8px
+$font-family: "helvetica neue"
+
+$bg: #fefefe
+$primary: #454E55
+$primary_inverse: lighten(#454E55,50%)
+$secondary: #666666
+
+// MIXINS
+=btn-states()
+  &:hover
+    background: $secondary
+    color: $primary_inverse
+  &:active
+    background: $primary_inverse
+    color: $primary
+  &:focus
+    outline: none
+
+
+// BASE STYLEZ
+
+*
+  //
+  box-sizing: border-box
+
+body
+  background: $bg
+  font-family: $font-family
+  color: $primary
+  font-weight: 200
+  padding: $buffer * 3 $buffer * 6
+
+  h1, h2, h3, h4, h5, h6
+    font-weight: 100
+    //text-align: center
+
+
+  a
+    color: $primary
+#content
+  max-width: 960px
+  margin: 0 auto
+
+  font-size: 0.80em
+
+  .mono
+    font-family: monospace
+    color: $secondary
+  td
+    padding-right: 16px
+    color: $secondary
+  td.mono
+    font-family: monospace
+    color: $primary
+
+button
+  font-family: $font-family
+  font-size: 1em
+  display: inline-block
+  border: 1px solid $secondary
+  background: none
+  padding: $buffer
+  margin-top: $buffer * 3
+
+  transition: all .10s
+
+  .icon
+    color: $secondary
+    font-weight: 100
+    padding: 0 2px 0 $buffer / 2
+  +btn-states()
+
+

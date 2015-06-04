@@ -1,0 +1,23 @@
+{
+  "name": "lendinghome.ui",
+  "version": "0.0.1",
+  "homepage": "https://github.com/LendingHome/lendinghome.ui",
+  "authors": [
+    "Eduardo Del Balso <eduardo@lendinghome.com>"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "directory": "app/bower_components",
+  "dependencies": {
+    "normalize.css": "~3.0.3",
+    "jquery": "~2.1.4",
+    "react": "~0.13.3",
+    "reflux": "~0.2.7",
+    "underscore": "~1.8.3"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "lendinghome.ui.base",
+  "version": "0.0.1",
+  "description": "Basic structure of a vendored lendinghome ui component",
+  "main": "lendinghome.ui.base.js",
+  "scripts": {
+    "test": "echo \"Error: no testing specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LendingHome/lendinghome.ui.base.git"
+  },
+  "author": "Eduardo Del Balso <eduardo@lendinghome.com>",
+  "bugs": {
+    "url": "https://github.com/LendingHome/lendinghome.ui.base/issues"
+  },
+  "homepage": "https://github.com/LendingHome/lendinghome.ui.base/issues",
+  "devDependencies": {
+    "browser-sync": "^2.7.6",
+    "gulp": "^3.8.11",
+    "gulp-sass": "^2.0.1",
+    "gulp-react": "^3.0.1"
+  }
+}
