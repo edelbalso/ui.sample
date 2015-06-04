@@ -2,6 +2,12 @@ $(function(){
   var Components = {};
   var Actions = {};
   var Stores = {};
+  var taskStatus = {
+    "SUCCEEDED" : "bar",
+    "FAILED" : "bar-failed",
+    "RUNNING" : "bar-running",
+    "KILLED" : "bar-killed"
+  };
 
   Actions.UISummary = Reflux.createActions([ "reload" ]);
 
@@ -26,14 +32,106 @@ $(function(){
         success: function() { that.setHeartbeat("SUCCESSFULLY CONNECTED")},
         error: function() { that.setHeartbeat("COULDN'T CONNECT")}
       });
+
+      $.ajax({
+        type: "GET",
+        url: 'https://gist.githubusercontent.com/edelbalso/e45a03a9a927a3138cfc/raw/622e4034656cc24453817800bbc74ac35b2e4c11/gistfile1.json',
+        //url: 'https://gist.githubusercontent.com/edelbalso/58d03e12f98707251fe8/raw/ec5759fb33d5a1cc10542b0cf0cab4026d35d6f7/gistfile1.json',
+        success: function(data) {
+          that.setChartData(data);
+        }
+      });
     },
 
     setHeartbeat: function(data){
       this.setState({heartbeat: data})
+    },
+
+    setChartData: function(data) {
+      this.setState({chartData: JSON.parse(data)});
     }
 
   });
 
+
+  TaskChart = React.createClass({
+
+    getInitialState: function() {
+      var filters = {
+        feature: true
+      };
+      return {
+        filters
+      }
+    },
+
+    getFeatureNames: function(features) {
+      var featureNames = _.map(features, function(f) {
+        return f.feature;
+      }).sort();
+      return _.uniq(featureNames);
+    },
+
+    filterData: function() {
+      var checklistItems = this.props.chartData ? this.props.chartData.checklist_item_report.checklist_items : undefined;
+
+      //TODO write these to run based on state of various toggles
+      var features = _.reject(checklistItems, function(cli) {
+        return cli.feature === "";
+      });
+
+      var completed = _.reject(features, function(f) {
+        return f.status === 'pending';
+      });
+
+      uniqFeatures = this.getFeatureNames(features);
+
+      return {
+        completed: completed,
+        uniqFeatures: uniqFeatures
+      }
+    },
+
+    xform: function(data) {
+      var transformed = [];
+      //TODO handle no dates, etc
+      _.each(data, function(d) {
+        var obj = {
+          "endDate": new Date(d.completed_at),
+          "startDate": new Date(d.started_at),
+          "taskName": d.feature,
+          "status" :"RUNNING"
+          }
+        transformed.push(obj);
+      });
+      return transformed;
+    },
+
+    componentDidMount: function() {
+      //var taskNames = [];
+      //var tasks = [];
+      //var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format).height(800).width(800);
+      //gantt(tasks);
+    },
+
+    componentDidUpdate: function() {
+      var filteredTasks = this.filterData();
+      var tasks = this.xform(filteredTasks.completed);
+      var taskNames = filteredTasks.uniqFeatures || [];
+      var format = "%b %_d %M:%S";
+
+      if (tasks.length > 0) {
+        var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format).height(800).width(800);
+        gantt(tasks);
+      }
+    },
+
+    render: function() {
+      return (
+        <div className="task-chart"></div>
+      );
+    }
+  });
 
   Components.UISummary = React.createClass({
     mixins: [Reflux.connect(Stores.UISummary)],
@@ -61,6 +159,8 @@ $(function(){
           </table>
           <br/>
           <br/>
+
+          <TaskChart chartData={this.state.chartData}/>
 
           <div><a class="reload" href="#"><button class="btn-link" onClick={this.reload}>Refresh UI <span class="icon">&rarr;</span></button></a></div>
           <div><a class="reload" href="https://github.com/Lendinghome/lendinghome.ui"><button class="btn-link">Visit On Github <span class="icon">&rarr;</span></button></a></div>
