@@ -2,12 +2,7 @@ $(function(){
   var Components = {};
   var Actions = {};
   var Stores = {};
-  var taskStatus = {
-    "SUCCEEDED" : "bar",
-    "FAILED" : "bar-failed",
-    "RUNNING" : "bar-running",
-    "KILLED" : "bar-killed"
-  };
+  var taskStatus;
 
   Actions.UISummary = Reflux.createActions([ "reload" ]);
 
@@ -57,6 +52,7 @@ $(function(){
   TaskChart = React.createClass({
 
     getInitialState: function() {
+      //TODO these could be set from the UI
       var filters = {
         feature: true
       };
@@ -65,11 +61,9 @@ $(function(){
       }
     },
 
-    getFeatureNames: function(features) {
-      var featureNames = _.map(features, function(f) {
-        return f.feature;
-      }).sort();
-      return _.uniq(featureNames);
+    pluckValue: function(list, value) {
+      var values = _.pluck(list, value).sort();
+      return _.uniq(values);
     },
 
     filterData: function() {
@@ -84,11 +78,14 @@ $(function(){
         return f.status === 'pending';
       });
 
-      uniqFeatures = this.getFeatureNames(features);
+      uniqFeatures = this.pluckValue(features, "feature");
+      uniqResponsible = this.pluckValue(features, "responsible_first_name");
+      console.log(uniqResponsible);
 
       return {
         completed: completed,
-        uniqFeatures: uniqFeatures
+        uniqFeatures: uniqFeatures,
+        uniqResponsible: uniqResponsible
       }
     },
 
@@ -100,11 +97,20 @@ $(function(){
           "endDate": new Date(d.completed_at),
           "startDate": new Date(d.started_at),
           "taskName": d.feature,
-          "status" :"RUNNING"
+          "status" : d.responsible_first_name,
+          "highlighted": true
           }
         transformed.push(obj);
       });
       return transformed;
+    },
+
+    generateTaskStatus: function(people) {
+      var status = {};
+      _.each(people, function(person, i) {
+          status[person] = "bar-person-" + i;
+      });
+      return status;
     },
 
     componentDidMount: function() {
@@ -118,7 +124,8 @@ $(function(){
       var filteredTasks = this.filterData();
       var tasks = this.xform(filteredTasks.completed);
       var taskNames = filteredTasks.uniqFeatures || [];
-      var format = "%b %_d %M:%S";
+      var taskStatus = this.generateTaskStatus(filteredTasks.uniqResponsible) || [];
+      var format = "%b %_d %H:%M";
 
       if (tasks.length > 0) {
         var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format).height(800).width(800);

@@ -79,4 +79,36 @@ button
   width: 10px;
   fill: hotPink
 
+$base_color: hsla(0, 100%, 50%, 1)
+.gantt-chart
+  rect
+    //fill: hotPink
+    width: 10px;
+.bar-person-0
+  fill: $base_color;
 
+.bar-person-1
+  fill: adjust-color($base_color, $hue: 80%);
+
+.bar-person-2
+  fill: adjust-color($base_color, $hue: 60%);
+
+.bar-person-3
+  fill: adjust-color($base_color, $hue: 40%);
+
+.bar-person-4
+  fill: hsl(240,100%,50%);
+
+.bar-person-5
+  fill: hotPink;
+
+.bar-person-6
+  fill: hsl(47, 100%, 50%);
+.bar-person-7
+  fill: adjust-color($base_color, $hue: 50%);
+
+.tooltip
+  position: absolute;
+  background: black;
+  color: white;
+  padding: 20px;
