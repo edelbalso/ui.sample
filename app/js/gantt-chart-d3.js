@@ -137,10 +137,9 @@ d3.gantt = function() {
         return hideTooltip();
     })
     .on('click', function(d) {
-        debugger;
         return d.highlightFunction.call(null, d.status);
     });
-   
+
    svg.append("g")
    .attr("class", "x axis")
    .attr("transform", "translate(0, " + (height - margin.top - margin.bottom) + ")")

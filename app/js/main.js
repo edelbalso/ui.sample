@@ -9,7 +9,7 @@ $(function(){
   Stores.UISummary = Reflux.createStore({
     listenables: [Actions.UISummary],
     getInitialState: function() {
-      this.state = {};
+      this.state = { };
       return this.state;
     },
 
@@ -53,11 +53,9 @@ $(function(){
 
     getInitialState: function() {
       //TODO these could be set from the UI
-      var filters = {
-        feature: true
-      };
       return {
-        filters
+        toggleUserOn: false,
+        highlightedUser: ''
       }
     },
 
@@ -89,7 +87,13 @@ $(function(){
     },
 
     callHighlight: function(name) {
-      return console.log('higlight', name);
+      console.log('higlight', name);
+
+      this.setState({
+        toggleUserOn: true,
+        highlightedUser: name
+      });
+
     },
 
     xform: function(data) {
@@ -116,24 +120,32 @@ $(function(){
       return status;
     },
 
-    componentDidMount: function() {
-      //var taskNames = [];
-      //var tasks = [];
-      //var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format).height(800).width(800);
-      //gantt(tasks);
-    },
-
     componentDidUpdate: function() {
       var filteredTasks = this.filterData();
       var tasks = this.xform(filteredTasks.completed);
-      var taskNames = filteredTasks.uniqFeatures || [];
-      var taskStatus = this.generateTaskStatus(filteredTasks.uniqResponsible) || [];
-      var format = "%b %_d %H:%M";
-
       if (tasks.length > 0) {
-        var gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format).height(800).width(800);
-        gantt(tasks);
+        console.log(this.state);
+
+        if (!this.state.toggleUserOn) {
+          this.renderUntoggled(filteredTasks, tasks);
+        } else {
+          this.renderToggled(filteredTasks, tasks);
+        }
+
       }
+    },
+
+    renderUntoggled: function(filteredTasks, tasks) {
+      var taskNames = filteredTasks.uniqFeatures || [];
+      var format = "%b %_d %H:%M";
+      var gantt;
+      var taskStatus = this.generateTaskStatus(filteredTasks.uniqResponsible);
+      gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format).height(800).width(800);
+      gantt(tasks);
+    },
+
+    renderToggled: function(filteredTasks, tasks) {
+      console.log('else');
     },
 
     render: function() {
