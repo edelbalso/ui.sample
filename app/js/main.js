@@ -137,7 +137,7 @@ $(function(){
 
     renderUntoggled: function(filteredTasks, tasks) {
       var taskNames = filteredTasks.uniqFeatures || [];
-      var format = "%b %_d %H:%M";
+      var format = "%b %_d";
       var gantt;
       var taskStatus = this.generateTaskStatus(filteredTasks.uniqResponsible);
       gantt = d3.gantt().taskTypes(taskNames).taskStatus(taskStatus).tickFormat(format).height(800).width(800);
