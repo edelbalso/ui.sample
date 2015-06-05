@@ -127,23 +127,19 @@ d3.gantt = function() {
    .attr("width", function(d) { 
        return (x(d.endDate) - x(d.startDate)); 
      })
-    .on('mouseover', (function(_this) {
-      return function(d) {
+    .on('mouseover', function(d) {
         return showTooltip(d.status);
-         //return console.log(d.status);
-      };
-    })(this))
-    .on('mousemove', (function(_this) {
-      return function() {
+    })
+    .on('mousemove', function() {
         return moveTooltip();
-      };
-    })(this))
-    .on('mouseout', (function(_this) {
-      return function() {
+    })
+    .on('mouseout', function() {
         return hideTooltip();
-      };
-    })(this));
-   
+    })
+    .on('click', function(d) {
+        debugger;
+        return d.highlightFunction.call(null, d.status);
+    });
    
    svg.append("g")
    .attr("class", "x axis")

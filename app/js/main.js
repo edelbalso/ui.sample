@@ -80,13 +80,16 @@ $(function(){
 
       uniqFeatures = this.pluckValue(features, "feature");
       uniqResponsible = this.pluckValue(features, "responsible_first_name");
-      console.log(uniqResponsible);
 
       return {
         completed: completed,
         uniqFeatures: uniqFeatures,
         uniqResponsible: uniqResponsible
       }
+    },
+
+    callHighlight: function(name) {
+      return console.log('higlight', name);
     },
 
     xform: function(data) {
@@ -98,10 +101,10 @@ $(function(){
           "startDate": new Date(d.started_at),
           "taskName": d.feature,
           "status" : d.responsible_first_name,
-          "highlighted": true
+          "highlightFunction": this.callHighlight
           }
         transformed.push(obj);
-      });
+      }.bind(this));
       return transformed;
     },
 
